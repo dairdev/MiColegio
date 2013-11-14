@@ -1,0 +1,286 @@
+#include "frmventas.h"
+#include "ui_frmventas.h"
+
+
+
+FrmVentas::FrmVentas(QWidget *parent) :
+    QFrame(parent),
+    ui(new Ui::FrmVentas)
+{
+    ui->setupUi(this);
+    alumnoId=1;    
+    ui->tabWidget->setCurrentIndex(0);
+    ui->filterDesde->setDate(QDate::currentDate());
+    ui->filterHasta->setDate(QDate::currentDate());
+    ui->btnAddDetalle->setEnabled(FALSE);
+    ui->tabDetalles->setEnabled(FALSE);
+    ui->txtTotal->setText("0.0");
+
+    this->listarVentas();        
+    productosModel = new QSqlTableModel(ui->cmbProducto);
+    productosModel->setTable("producto");
+    ui->cmbProducto->setModel(this->productosModel);
+    ui->cmbProducto->setModelColumn(productosModel->fieldIndex("descripcion"));
+    if(!productosModel->select()){
+        QMessageBox::critical(0,QObject::tr("Database Error"), productosModel->lastError().text());
+    }
+
+    mapperProductos=new QDataWidgetMapper(ui->cmbProducto);
+    mapperProductos->setModel(productosModel);
+    mapperProductos->addMapping(ui->txtPunitario, productosModel->fieldIndex("precio"));
+    mapperProductos->toFirst();    
+
+}
+
+FrmVentas::~FrmVentas()
+{
+    delete ui;
+}
+
+void FrmVentas::listarVentas(){
+    ventasModel=new QSqlTableModel(ui->tbwVentas);
+    ventasModel->setTable("venta");
+
+    QString filters=QString("emision >= '%1' and emision <=  '%2'").arg(ui->filterDesde->date().toString("yyyy-MM-dd")).arg(ui->filterHasta->date().toString("yyyy-MM-dd"));
+
+    if(!ui->filterCliente->text().trimmed().isEmpty()){
+        filters.append("cliente like '%" + ui->filterCliente->text().trimmed() + "%' ");
+    }
+
+    ventasModel->setFilter(filters);
+
+    ventasModel->setHeaderData(ventasModel->fieldIndex("emision"),Qt::Horizontal,tr("Emision"));
+    ventasModel->setHeaderData(ventasModel->fieldIndex("cliente"),Qt::Horizontal,tr("Cliente"));
+    ventasModel->setHeaderData(ventasModel->fieldIndex("monto"),Qt::Horizontal,tr("Total"));
+    ventasModel->setHeaderData(ventasModel->fieldIndex("monto_cancelado"),Qt::Horizontal,tr("Pago"));
+    ventasModel->setHeaderData(ventasModel->fieldIndex("descuento"),Qt::Horizontal,tr("Dcto."));
+
+    if(!ventasModel->select()){
+        QMessageBox::critical(0, QObject::tr("Database Error"),
+                              ventasModel->lastError().text());
+    }
+
+    ui->tbwVentas->setModel(ventasModel);
+    ui->tbwVentas->setColumnHidden(ventasModel->fieldIndex("id"), true);
+    ui->tbwVentas->setColumnHidden(ventasModel->fieldIndex("alumno_id"), true);
+    ui->tbwVentas->setColumnHidden(ventasModel->fieldIndex("es_activo"), true);
+    ui->tbwVentas->setColumnHidden(ventasModel->fieldIndex("estado"), true);
+    ui->tbwVentas->setColumnHidden(ventasModel->fieldIndex("creado_por"), true);
+    ui->tbwVentas->setColumnHidden(ventasModel->fieldIndex("modificado_por"), true);
+    ui->tbwVentas->setColumnHidden(ventasModel->fieldIndex("personal_id"), true);
+    ui->tbwVentas->setColumnWidth(1, 110);
+    ui->tbwVentas->setColumnWidth(2, 100);
+    ui->tbwVentas->setColumnWidth(3, 300);
+    ui->tbwVentas->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->tbwVentas->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tbwVentas->setItemDelegate(new QSqlRelationalDelegate(ui->tbwVentas));
+
+    mapper = new QDataWidgetMapper(this);
+    //mapper->setSubmitPolicy(QDataWidgetMapper::AutoSubmit);
+    mapper->setModel(ventasModel);    
+    mapper->setItemDelegate(new QSqlRelationalDelegate(this));
+    mapper->setCurrentIndex(ventasModel->fieldIndex("id"));
+
+    connect(ui->tbwVentas->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+            mapper, SLOT(setCurrentModelIndex(QModelIndex)));
+}
+
+void FrmVentas::on_btnNuevo_clicked()
+{
+    //Go to Tab Venta
+    this->ui->tabWidget->setCurrentIndex(1);
+    ui->dteEmision->setDate(QDate::currentDate());
+    this->ventaId=0;
+    this->alumnoId=0;
+    ui->tabDetalles->setEnabled(TRUE);
+}
+
+void FrmVentas::on_btnGuardar_clicked()
+{
+    //Validar los campos fecha y cliente y que tenga como minimo un item
+    if (!ui->txtCliente->text().trimmed().isEmpty()){
+        QSqlQuery queryVenta;
+        if (this->ventaId > 0){
+            queryVenta.prepare("INSERT INTO `micolegio`.`venta`(`emision`,`monto`,`estado`,`cliente`,`monto_cancelado`,`descuento`,"
+                                "`alumno_id`, `creado_por`,`personal_id`)"
+                                " VALUES ( :emision, :monto, :estado, :cliente, :monto_cancelado, :descuento, :alumno_id, :creado_por, :personal_id ) ");
+        }else{
+            queryVenta.prepare("UPDATE `micolegio`.`venta` "
+                                " SET emision=:emision, monto=:monto, estado=:estado, cliente=:cliente, monto_cancelado=:monto_cancelado, "
+                               "descuento=:descuento, alumno_id=:alumno_id, creado_por=:creado_por, modificado_por= :modificado_por, modificado_en = :modificado_en"
+                               "where id= :ventaId ");
+        }
+
+        queryVenta.bindValue(":emision", ui->dteEmision->date());
+        queryVenta.bindValue(":monto", ui->txtTotal->text().toDouble());
+        char estado = (ui->txtMontoCancelado->text().toDouble() == ui->txtTotal->text().toDouble()) ? 'C' : 'P' ;
+        queryVenta.bindValue(":estado", estado);
+        queryVenta.bindValue(":cliente", ui->txtCliente->text());
+        queryVenta.bindValue(":monto_cancelado", ui->txtMontoCancelado->text().toDouble());
+        queryVenta.bindValue(":descuento", ui->nDescuento->text().toDouble());
+        qDebug()<<this->alumnoId;
+        queryVenta.bindValue(":alumno_id", this->alumnoId);
+        int userId = qApp->property("user").toInt();
+        queryVenta.bindValue(":creado_por",userId);
+        queryVenta.bindValue(":personal_id",userId);
+
+        if(!queryVenta.exec()){
+            QMessageBox::critical(0, QObject::tr("Database Error"),
+                                              queryVenta.lastError().text());
+        }else{
+            this->ventaId=queryVenta.lastInsertId().toInt();
+            ui->btnAddDetalle->setEnabled(true);
+            QMessageBox msgBox;
+             msgBox.setText("La venta fue grabada con exito");
+             msgBox.exec();
+        }
+    }
+
+}
+
+void FrmVentas::buscarPorDni(){
+    if (this->ui->txtDniAlumno->text().toInt() > 100){
+        QSqlQuery query;
+        query.prepare("select id, nombre, paterno, materno, dni from alumno where dni=:dni");
+        query.bindValue(":dni", this->ui->txtDniAlumno->text().toInt());
+        if (query.exec()){
+            while(query.next()){
+                this->alumnoId=query.value(0).toInt();
+                ui->txtCliente->setText(QString("%1 %2 %3").arg(query.value(1).toString()).arg(query.value(2).toString()).arg(query.value(3).toString()));
+            }
+        }
+    }
+}
+
+void FrmVentas::on_txtDniAlumno_returnPressed()
+{
+    this->buscarPorDni();
+}
+
+void FrmVentas::on_txtDniAlumno_lostFocus()
+{
+    this->buscarPorDni();
+}
+
+void FrmVentas::on_btnBuscar_pressed()
+{
+    this->listarVentas();
+}
+
+void FrmVentas::on_btnAddDetalle_pressed()
+{
+    //Save the detail item in the sell
+    if (ui->txtCantidad->value() > 0){
+        QSqlQuery query;
+        if (this->ventaId > 0){
+            query.prepare("insert into micolegio.detalleventa(unidades, precio, total, descuento, producto_id, venta_id, creado_por)"
+                          "values (:unidades, :precio, :total, :descuento, :producto_id, :venta_id, :creado_por);");
+
+            query.bindValue(":unidades", ui->txtCantidad->value());
+            query.bindValue(":precio", ui->txtPunitario->value());
+            query.bindValue(":total", ui->dpTotal->value());
+            query.bindValue(":descuento", ui->dpDescuento->value());
+            query.bindValue(":producto_id", ui->cmbProducto->model()->data(ui->cmbProducto->model()->index(ui->cmbProducto->currentIndex(),0)).toInt());
+            query.bindValue(":venta_id", this->ventaId);
+            int userId = qApp->property("user").toInt();
+            query.bindValue(":creado_por",userId);
+            if(!query.exec()){
+                QMessageBox::critical(0, QObject::tr("Database Error"),
+                                                  query.lastError().text());
+            }else{
+                this->listarDetalles();
+            }
+        }
+    }
+
+}
+
+void FrmVentas::on_cmbProducto_editTextChanged(const QString &arg1)
+{
+    QString aux=arg1.trimmed();
+    if (aux.length() > 3){        
+        ui->cmbProducto->findText(arg1, Qt::MatchContains);
+    }
+}
+
+void FrmVentas::calcularTotalItem(){
+    double precioUnitario=ui->txtPunitario->text().toDouble();
+    int cantidad = ui->txtCantidad->text().toInt();
+    double total=cantidad*precioUnitario;
+    ui->dpTotal->setValue(total);
+}
+
+void FrmVentas::listarDetalles()
+{
+
+    if (this->ventaId > 0) {
+        this->detallesModel=new QSqlRelationalTableModel(ui->tbwDetallesVenta);
+        this->detallesModel->setTable("detalleventa");
+
+        this->detallesModel->setRelation(detallesModel->fieldIndex("producto_id"), QSqlRelation("producto","id","descripcion"));
+
+        this->detallesModel->setFilter(QString("venta_id=%1").arg(this->ventaId));
+
+        this->detallesModel->setHeaderData(detallesModel->fieldIndex("producto_id"),Qt::Horizontal,tr("Producto"));
+        this->detallesModel->setHeaderData(detallesModel->fieldIndex("unidades"),Qt::Horizontal,tr("Cantidad"));
+        this->detallesModel->setHeaderData(detallesModel->fieldIndex("precio"),Qt::Horizontal,tr("P.Unit."));
+        this->detallesModel->setHeaderData(detallesModel->fieldIndex("descuento"),Qt::Horizontal,tr("Dscto."));
+        this->detallesModel->setHeaderData(detallesModel->fieldIndex("total"),Qt::Horizontal,tr("Total"));
+
+        this->detallesModel->select();
+
+        double total=0.0;
+        for (int row=0; row< this->detallesModel->rowCount(); ++row){
+            QSqlRecord record=this->detallesModel->record(row);
+            total=total + record.value("total").toDouble();
+        }
+        ui->txtTotal->setText(QString::number(total));
+
+        ui->tbwDetallesVenta->setModel(this->detallesModel);
+        ui->tbwDetallesVenta->setColumnHidden(detallesModel->fieldIndex("id"), true);
+        ui->tbwDetallesVenta->setColumnHidden(detallesModel->fieldIndex("venta_id"), true);
+        ui->tbwDetallesVenta->setColumnHidden(detallesModel->fieldIndex("igv"), true);
+        ui->tbwDetallesVenta->setColumnHidden(detallesModel->fieldIndex("creado_en"), true);
+        ui->tbwDetallesVenta->setColumnHidden(detallesModel->fieldIndex("creado_por"), true);
+        ui->tbwDetallesVenta->setColumnHidden(detallesModel->fieldIndex("modificado_en"), true);
+        ui->tbwDetallesVenta->setColumnHidden(detallesModel->fieldIndex("modificado_por"), true);
+        ui->tbwDetallesVenta->setColumnHidden(detallesModel->fieldIndex("producto_id"), true);
+
+        ui->tbwDetallesVenta->setColumnWidth(1, 300);
+
+        ui->tbwDetallesVenta->setSelectionMode(QAbstractItemView::SingleSelection);
+        ui->tbwDetallesVenta->setSelectionBehavior(QAbstractItemView::SelectRows);
+        ui->tbwDetallesVenta->setItemDelegate(new QSqlRelationalDelegate(ui->tbwDetallesVenta));
+
+
+    }
+
+}
+
+void FrmVentas::on_cmbProducto_currentIndexChanged(int index)
+{
+    if (mapperProductos != NULL && index > 0){
+        mapperProductos->setCurrentIndex(index);
+        this->calcularTotalItem();
+    }
+}
+
+void FrmVentas::on_txtCantidad_valueChanged(int arg1)
+{
+    if (arg1 > 0){
+        this->calcularTotalItem();
+    }
+}
+
+void FrmVentas::on_tbwVentas_doubleClicked(const QModelIndex &index)
+{
+    this->ventaId= this->ventasModel->data(this->ventasModel->index(mapper->currentIndex(),0)).toInt();
+    //Set the values in the Tab Detalle
+    ui->dteEmision->setDate(this->ventasModel->data(this->ventasModel->index(mapper->currentIndex(),this->ventasModel->fieldIndex("emision"))).toDate());
+    ui->txtCliente->setText(this->ventasModel->data(this->ventasModel->index(mapper->currentIndex(),this->ventasModel->fieldIndex("cliente"))).toString());
+
+    this->listarDetalles();
+    ui->btnAddDetalle->setEnabled(TRUE);
+    ui->tabDetalles->setEnabled(TRUE);
+    this->ui->tabWidget->setCurrentIndex(1);
+}
