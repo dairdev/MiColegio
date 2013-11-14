@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FrmAlumnos</class>
+ <widget class="QFrame" name="FrmAlumnos">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>628</width>
+    <height>565</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Alumnos</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="micolegio.qrc">
+    <normaloff>:/images/maintoolbar/contactbook.png</normaloff>:/images/maintoolbar/contactbook.png</iconset>
+  </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
+  </property>
+  <property name="frameShape">
+   <enum>QFrame::WinPanel</enum>
+  </property>
+  <property name="frameShadow">
+   <enum>QFrame::Raised</enum>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <item row="1" column="0">
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>200</width>
+        <height>500</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>Alumnos</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <layout class="QGridLayout" name="gridLayoutTable">
+       <item row="1" column="0">
+        <widget class="QTableView" name="tbwAlumnos">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLineEdit" name="lineEdit"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QFrame" name="topFrame">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">#topFrame {
+background: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 rgba(37, 77, 136, 255), stop:1 rgba(58, 116, 177, 255));
+padding: 0;
+}
+
+#topFrame QPushButton {
+border: none;
+padding: 3px 5px;
+margin: 0;
+background-color: none;
+color:white;
+}
+
+#topFrame QPushButton:hover {
+background: qradialgradient(cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4, 
+radius: 1.35, stop: 0 #fff, stop:  1 #bbb);
+color : rgba(58, 116, 177, 255);
+}
+
+#topFrame QPushButton:pressed {
+background: qradialgradient(cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4, 
+radius: 1.35, stop: 0 #fff, stop:  1 #ddd);
+}</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="lineWidth">
+      <number>0</number>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetMinimumSize</enum>
+      </property>
+      <item>
+       <widget class="QPushButton" name="btnNuevo">
+        <property name="text">
+         <string>&amp;Nuevo</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normalon>:/images/standardtoolbar/document-new.png</normalon>
+         </iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>22</width>
+          <height>22</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnBorrar">
+        <property name="text">
+         <string>&amp;Borrar</string>
+        </property>
+        <property name="icon">
+         <iconset resource="micolegio.qrc">
+          <normaloff>:/images/standardtoolbar/delete.png</normaloff>:/images/standardtoolbar/delete.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnImprimir">
+        <property name="text">
+         <string>&amp;Imprmir</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normalon>:/images/standardtoolbar/document-print.png</normalon>
+         </iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>22</width>
+          <height>22</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="micolegio.qrc"/>
+ </resources>
+ <connections/>
+</ui>

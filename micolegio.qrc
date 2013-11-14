@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/favicon.png</file>
+        <file>images/standardtoolbar/document-new.png</file>
+        <file>images/standardtoolbar/document-print.png</file>
+        <file>images/maintoolbar/accessories-calculator.png</file>
+        <file>images/maintoolbar/avatar-default.png</file>
+        <file>images/maintoolbar/config-users.png</file>
+        <file>images/maintoolbar/contactbook.png</file>
+        <file>images/maintoolbar/cuentas.png</file>
+        <file>images/maintoolbar/home.png</file>
+        <file>images/maintoolbar/inventory.png</file>
+        <file>images/maintoolbar/product.png</file>
+        <file>images/maintoolbar/system.png</file>
+        <file>images/maintoolbar/ventascompras.png</file>
+        <file>images/standardtoolbar/document-save.png</file>
+        <file>images/standardtoolbar/view-form-table.png</file>
+        <file>images/maintoolbar/user.png</file>
+        <file>images/extras/loginimage.png</file>
+        <file>images/standardtoolbar/delete.png</file>
+        <file>images/standardtoolbar/list-add.png</file>
+        <file>images/insigniaJPII.png</file>
+        <file>images/maintoolbar/glippy-panel.png</file>
+    </qresource>
+</RCC>

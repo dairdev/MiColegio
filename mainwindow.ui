@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Mi Colegio</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="micolegio.qrc">
+    <normaloff>:/images/favicon.png</normaloff>:/images/favicon.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <property name="minimumSize">
+    <size>
+     <width>800</width>
+     <height>0</height>
+    </size>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="margin">
+     <number>2</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QMdiArea" name="mdiArea">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAsNeeded</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAsNeeded</enum>
+      </property>
+      <property name="viewMode">
+       <enum>QMdiArea::TabbedView</enum>
+      </property>
+      <property name="documentMode">
+       <bool>true</bool>
+      </property>
+      <property name="tabsClosable">
+       <bool>true</bool>
+      </property>
+      <property name="tabPosition">
+       <enum>QTabWidget::North</enum>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusBar">
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>20</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Maximum">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>42</width>
+     <height>42</height>
+    </size>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextUnderIcon</enum>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionInicio"/>
+   <addaction name="actionAlumnos"/>
+   <addaction name="actionVentas"/>
+   <addaction name="actionCompras"/>
+   <addaction name="actionInventario"/>
+   <addaction name="actionCuentas"/>
+   <addaction name="actionProductos"/>
+   <addaction name="actionSistema"/>
+  </widget>
+  <widget class="QToolBar" name="toolBarUser">
+   <property name="windowTitle">
+    <string>toolBar_2</string>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <action name="actionInicio">
+   <property name="icon">
+    <iconset resource="micolegio.qrc">
+     <normaloff>:/images/maintoolbar/home.png</normaloff>:/images/maintoolbar/home.png</iconset>
+   </property>
+   <property name="text">
+    <string>Inicio</string>
+   </property>
+   <property name="toolTip">
+    <string>Pantalla de inicio</string>
+   </property>
+  </action>
+  <action name="actionAlumnos">
+   <property name="icon">
+    <iconset resource="micolegio.qrc">
+     <normaloff>:/images/maintoolbar/contactbook.png</normaloff>:/images/maintoolbar/contactbook.png</iconset>
+   </property>
+   <property name="text">
+    <string>Alumnos</string>
+   </property>
+   <property name="toolTip">
+    <string>Administracion de Alumnos</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="actionSistema">
+   <property name="icon">
+    <iconset resource="micolegio.qrc">
+     <normaloff>:/images/maintoolbar/system.png</normaloff>:/images/maintoolbar/system.png</iconset>
+   </property>
+   <property name="text">
+    <string>Sistema</string>
+   </property>
+   <property name="toolTip">
+    <string>Configuracion del Sistema</string>
+   </property>
+  </action>
+  <action name="actionVentas">
+   <property name="icon">
+    <iconset resource="micolegio.qrc">
+     <normaloff>:/images/maintoolbar/ventascompras.png</normaloff>:/images/maintoolbar/ventascompras.png</iconset>
+   </property>
+   <property name="text">
+    <string>Ventas</string>
+   </property>
+   <property name="toolTip">
+    <string>Registro de Ventas</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+V</string>
+   </property>
+  </action>
+  <action name="actionProductos">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="micolegio.qrc">
+     <normaloff>:/images/maintoolbar/product.png</normaloff>:/images/maintoolbar/product.png</iconset>
+   </property>
+   <property name="text">
+    <string>Productos</string>
+   </property>
+   <property name="toolTip">
+    <string>Administracion de Productos</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionInventario">
+   <property name="icon">
+    <iconset resource="micolegio.qrc">
+     <normaloff>:/images/maintoolbar/inventory.png</normaloff>:/images/maintoolbar/inventory.png</iconset>
+   </property>
+   <property name="text">
+    <string>Inventario</string>
+   </property>
+   <property name="toolTip">
+    <string>Administrar Inventario</string>
+   </property>
+  </action>
+  <action name="actionCuentas">
+   <property name="icon">
+    <iconset resource="micolegio.qrc">
+     <normaloff>:/images/maintoolbar/cuentas.png</normaloff>:/images/maintoolbar/cuentas.png</iconset>
+   </property>
+   <property name="text">
+    <string>Cuentas</string>
+   </property>
+   <property name="toolTip">
+    <string>Administrar las cuentas</string>
+   </property>
+  </action>
+  <action name="actionCompras">
+   <property name="icon">
+    <iconset resource="micolegio.qrc">
+     <normaloff>:/images/maintoolbar/glippy-panel.png</normaloff>:/images/maintoolbar/glippy-panel.png</iconset>
+   </property>
+   <property name="text">
+    <string>Compras</string>
+   </property>
+   <property name="toolTip">
+    <string>Administrar Compras</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="micolegio.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>mdiArea</sender>
+   <signal>subWindowActivated(QMdiSubWindow*)</signal>
+   <receiver>toolBar</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>330</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>158</x>
+     <y>40</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
